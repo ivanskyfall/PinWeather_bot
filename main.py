@@ -54,7 +54,7 @@ def setlocation(update: Update, context: CallbackContext):
 
 
 def weathernow(update: Update, context: CallbackContext):
-    conexion = psycopg2.connect(host="localhost", database="users", user="postgres", password="arj83pk90")
+    conexion = psycopg2.connect(host=host, database="users", user="postgres", password=password)
     cur = conexion.cursor()
     cur.execute(f"SELECT * FROM users WHERE chat_id = {update.message.chat_id}")
     consulta = cur.fetchall()
@@ -89,7 +89,7 @@ def button(update: Update, context: CallbackContext):
 
     # Comprobación de los callbacks
     if query.data == "my perfil":
-        conexion = psycopg2.connect(host="localhost", database="users", user="postgres", password="arj83pk90")
+        conexion = psycopg2.connect(host=host, database="users", user="postgres", password=password)
         cur = conexion.cursor()
         # Consulta para darle al usuario información de su perfil
         chat_id = query.message.chat_id
@@ -99,7 +99,7 @@ def button(update: Update, context: CallbackContext):
         query.message.reply_text(f"Aquí está tu perfil: \nCiudad: {consulta[0][1]} \nPinWeather Pro: No disponible", reply_markup=InlineKeyboardMarkup(tecladomiperfil))
 
     elif query.data == "weathernow":
-        conexion = psycopg2.connect(host="localhost", database="users", user="postgres", password="arj83pk90")
+        conexion = psycopg2.connect(host=host, database="users", user="postgres", password=password)
         cur = conexion.cursor()
         cur.execute(f"SELECT * FROM users WHERE chat_id = {query.message.chat_id}")
         consulta = cur.fetchall()
@@ -120,7 +120,7 @@ def button(update: Update, context: CallbackContext):
         query.message.reply_text("¿Estás seguro que quieres eliminar tu perfil?", reply_markup=InlineKeyboardMarkup(tecladoelimianrperfil))
 
     elif query.data == "confirmareliminar":
-        conexion = psycopg2.connect(host="localhost", database="users", user="postgres", password="arj83pk90")
+        conexion = psycopg2.connect(host=host, database="users", user="postgres", password=password)
         cur = conexion.cursor()
         cur.execute(f"BEGIN; DELETE FROM users WHERE chat_id = {query.message.chat.id}; \nCOMMIT")
         query.message.reply_text("Perfil Eliminado.")
@@ -135,7 +135,7 @@ def button(update: Update, context: CallbackContext):
     elif query.data in results:
         long = longitud[int(query.data) - 1]
         lat = latitud[int(query.data) - 1]
-        conexion = psycopg2.connect(host="localhost", database="users", user="postgres", password="arj83pk90")
+        conexion = psycopg2.connect(host=host, database="users", user="postgres", password=password)
         cur = conexion.cursor()
         cur.execute(
             f"BEGIN; UPDATE users \nSET \nlatitud = {lat}, longitud = {long}, \ncity = \'{location}\' \nWHERE chat_id = {query.message.chat.id}; \nCOMMIT")
@@ -152,7 +152,7 @@ def start(update: Update, context: CallbackContext):
 
     # Ver si el usuario está en la base de datos
 
-    conexion = psycopg2.connect(host="localhost", database="users", user="postgres", password="arj83pk90")
+    conexion = psycopg2.connect(host=host, database="users", user="postgres", password=password)
     cur = conexion.cursor()
     cur.execute(f"SELECT chat_id FROM users WHERE chat_id = {update.message.chat_id}")
     consulta = cur.fetchall()
@@ -188,6 +188,8 @@ if __name__ == '__main__':
     TOKEN = getenv("TOKEN_BOT")
     API = getenv("TOKEN_API")
     chanel = getenv("CHANEL")
+    host = getenv("DATABASE_URL")
+    password = getenv("DATABASE_URL")
 
     bot = Bot(TOKEN)
     updater = Updater(TOKEN, use_context=True)
