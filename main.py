@@ -5,6 +5,7 @@ import psycopg2
 import json
 import requests
 import re
+import weather
 
 
 location, latitud, longitud = '', [], []
@@ -18,14 +19,17 @@ def consultbd(chat_id):
     return consulta
 
 
+"""
 def currentweather(params: dict):
     r = requests.get("https://api.openweathermap.org/data/2.5/weather", params=params)
     request = r.json()
     reply = f"En {request['name']} hay {request['weather'][0]['description']}. La temperatura es de {request['main']['temp']} ºC," \
             f" que se sienten como {request['main']['feels_like']} ºC. La presión es de {request['main']['pressure']} hPa"\
             f" y la humedad relativa es del {request['main']['humidity']}%. El viento sopla a {request['wind']['speed']} m/s."
-    bot.send_message(chat_id=chanel, text=f"#resumen {request['weather'][0]['description']}")
+    bot.send_message(chat_id=chanel, text=f"#resumen: {request['weather'][0]['description']}, main: {request['weather'][0]['main']} ")
     return reply
+
+"""
 
 
 def setlocation(update: Update, context: CallbackContext):
@@ -72,8 +76,8 @@ def setlocation(update: Update, context: CallbackContext):
 def weathernow(update: Update, context: CallbackContext):
     consulta = consultbd(update.message.chat_id)
     if consulta[0][1] is not None:
-        paramas = {"lat": consulta[0][2], "lon": consulta[0][3], "appid": API, "units": "metric", "lang": "es"}
-        text_reply = currentweather(paramas)
+        params = {"lat": consulta[0][2], "lon": consulta[0][3], "appid": API, "units": "metric", "lang": "es"}
+        text_reply = weather.weathertext(params)
         update.message.reply_text(text=text_reply)
     elif consulta[0][1] is None:
         update.message.reply_text("Parece que no has registrado ninguna ciudad, utiliza el comando /setlocation para eso.")
@@ -110,7 +114,7 @@ def button(update: Update, context: CallbackContext):
         consulta = consultbd(query.message.chat_id)
         if consulta[0][1] is not None:
             params = {"lat": consulta[0][2], "lon": consulta[0][3], "appid": API, "units": "metric", "lang": "es"}
-            text_reply = currentweather(params)
+            text_reply = weather.weathertext(params)
             query.message.reply_text(text=text_reply)
         elif consulta[0][1] is None:
             query.message.reply_text("Parece que <b>no has registrado ninguna ciudad</b>, utiliza el comando /setlocation para eso.", parse_mode=ParseMode.HTML)
