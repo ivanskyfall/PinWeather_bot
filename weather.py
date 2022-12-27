@@ -11,7 +11,7 @@ def weathertext(params: dict):
             f"\n  Se siente como {request['main']['feels_like']} ºC " \
             f"\n  Mínima: {request['main']['temp_min']} ºC " \
             f"\n  Máxima: {request['main']['temp_max']} ºC" \
-            f"\nViento: {request['wind']['speed'] * 3.6} km/h" \
+            f"\nViento: {round((request['wind']['speed'] * 3.6), 2)} km/h" \
             f"\nNubosidad: {request['clouds']['all']}%" \
 
     if 'rain' in request and request['rain']['3h'] != 0:
