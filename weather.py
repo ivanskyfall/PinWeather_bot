@@ -1,9 +1,7 @@
 import requests
 
 
-def weathertext(params: dict):
-    r = requests.get("https://api.openweathermap.org/data/2.5/weather", params=params)
-    request = r.json()
+def weathertext(request: dict):
     reply = f"Ciudad: {request['name']} " \
             f"\nResumen: {request['weather'][0]['description'].capitalize()} " \
             f"\nTemperatura: " \
@@ -25,3 +23,11 @@ def weathertext(params: dict):
                     f"\nHumedad relativa: {request['main']['humidity']}%"
 
     return reply
+
+
+"""
+reply = f"En {request['name']} hay {request['weather'][0]['description']}. La temperatura es de {request['main']['temp']} ºC," \
+        f" que se sienten como {request['main']['feels_like']} ºC. La presión es de {request['main']['pressure']} hPa"\
+        f" y la humedad relativa es del {request['main']['humidity']}%. El viento sopla a {request['wind']['speed']} m/s."
+
+"""
