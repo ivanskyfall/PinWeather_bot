@@ -46,24 +46,29 @@ def setlocation(update: Update, context: CallbackContext):
         params["q"] = location
         r = requests.get("http://api.openweathermap.org/geo/1.0/direct?", params=params)
         jsonfile = r.json()
-        with open("ISO3166-1.json") as file:  # Abrir JSON con código de países.
-            data = json.load(file)
-            count = 1
-            text = ""
-            botton = []
-            for city in jsonfile:
-                countstr = str(count)
-                botton.append(InlineKeyboardButton(countstr, callback_data=countstr))
-                latitud.append(city["lat"])
-                longitud.append(city["lon"])
-                text = text + "\n" + countstr + "." + " " + city["name"] + "," + " " + data[city["country"]]
-                if "state" in city:
-                    text = text + ":" + " " + city["state"]
-                count += 1
-        file.close()
-        tecladociudades = [botton]
-        update.message.reply_text(f"<b>Selecciona tu ciudad:</b> \n{text}",
-                                  reply_markup=InlineKeyboardMarkup(tecladociudades), parse_mode=ParseMode.HTML)
+        if len(jsonfile) == 0:
+            update.message.reply_text("Parece que no hemos encontrado ninguna ciudad con ese nombre, lo sentimos mucho.")
+        else:
+            with open("ISO3166-1.json") as file:  # Abrir JSON con código de países.
+                data = json.load(file)
+                count = 1
+                text = ""
+                botton = []
+                for city in jsonfile:
+                    countstr = str(count)
+                    botton.append(InlineKeyboardButton(countstr, callback_data=countstr))
+                    latitud.append(city["lat"])
+                    longitud.append(city["lon"])
+                    text = text + "\n" + countstr + "." + " " + city["name"] + ","
+                    if "state" in city:
+                        text = text + " " + city["state"]
+                    text = text + ":" + " " + data[city["country"]]
+                    count += 1
+            file.close()
+            tecladociudades = [botton, [InlineKeyboardButton("Ninguna de estas.", callback_data="ciudad_no_encontrada")]]
+            update.message.reply_text(f"<b>Selecciona tu ciudad:</b> \n{text}",
+                                      reply_markup=InlineKeyboardMarkup(tecladociudades), parse_mode=ParseMode.HTML)
+
     else:
         update.message.reply_text("Parece que no ingresaste la ciudad correctamente. Usa el formato <b>'/setlocation Ciudad, País'.</b>", parse_mode=ParseMode.HTML)
 
@@ -116,6 +121,9 @@ def button(update: Update, context: CallbackContext):
         else:
             query.message.reply_text("ERROR DESCONOCIDO")
             bot.send_message(chat_id=chanel, text="Error en comando boton weathernow, excepción desconocida")
+
+    elif query.data == "ciudad_no_encontrada":
+        query.message.reply_text("Intenta escribir la ubicación de otra forma o cambia el país por el estado, por ejemplo: /setlocation Miami, Florida.")
 
     elif query.data == "cambiarciudad":
         consulta = consultbd(query.message.chat_id)
@@ -190,7 +198,6 @@ def helpcommand(update: Update, context: CallbackContext):
 
 
 if __name__ == '__main__':
-
     TOKEN = getenv("TOKEN_BOT")
     API = getenv("TOKEN_API")
     chanel = getenv("CHANEL")
