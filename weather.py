@@ -1,3 +1,41 @@
+"""Recibe un float de la respuesta
+de la API de la dirección del viento
+y devuelve el punto cardinal correspondiente"""
+
+
+def wind_direction(dirc):
+    dirc = int(dirc)
+    if dirc in range(0, 23):
+        return "N\u2191"
+    elif dirc in range(23, 68):
+        return "NE\u2197"
+    elif dirc in range(68, 113):
+        return "E\u2192"
+    elif dirc in range(113, 158):
+        return "SE\u2198"
+    elif dirc in range(158, 203):
+        return "S\u2193"
+    elif dirc in range(203, 248):
+        return "SO\u2199"
+    elif dirc in range(248, 293):
+        return "O\u2190"
+    elif dirc in range(293, 338):
+        return "NO\u2196"
+    elif dirc in range(338, 361):
+        return "N\u2191"
+    else:
+        return None
+
+
+
+
+
+"""
+Arma el texto para enviarlo con la
+información meteorlógica,
+recibe un dic con la respuesta de la api
+"""
+
 
 def weathertext(request: dict):
     reply = f"Ciudad: {request['name']} " \
@@ -7,7 +45,7 @@ def weathertext(request: dict):
             f"\n  Se siente como {request['main']['feels_like']} ºC" \
             f"\n  Mínima: {request['main']['temp_min']} ºC" \
             f"\n  Máxima: {request['main']['temp_max']} ºC" \
-            f"\nViento: {round((request['wind']['speed'] * 3.6), 2)} km/h" \
+            f"\nViento: {round((request['wind']['speed'] * 3.6), 2)} km/h, con dirección {wind_direction(request['wind']['deg'])} " \
             f"\nNubosidad: {request['clouds']['all']}%" \
 
     if 'rain' in request and request['rain']['3h'] != 0:
@@ -29,28 +67,4 @@ reply = f"En {request['name']} hay {request['weather'][0]['description']}. La te
         f" y la humedad relativa es del {request['main']['humidity']}%. El viento sopla a {request['wind']['speed']} m/s."
 
 """
-
-
-def wind_direction(dirc):
-    dirc = int(dirc)
-    if dirc in range(0, 23):
-        return "N\u2191"
-    elif dirc in range(23, 68):
-        return "NE\2197"
-    elif dirc in range(68, 113):
-        return "E\u2192"
-    elif dirc in range(113, 158):
-        return "SE\2198"
-    elif dirc in range(158, 203):
-        return "S\u2193"
-    elif dirc in range(203, 248):
-        return "SO\u2199"
-    elif dirc in range(248, 293):
-        return "O\u2190"
-    elif dirc in range(293, 338):
-        return "NO\u2196"
-    elif dirc in range(338, 361):
-        return "N\u2191"
-    else:
-        return None
 
