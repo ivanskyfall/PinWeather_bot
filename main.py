@@ -23,7 +23,7 @@ def currentweather(params: dict):
     r = requests.get("https://api.openweathermap.org/data/2.5/weather", params=params)
     request = r.json()
     reply = weather.weathertext(request)
-    bot.send_message(chat_id=chanel, text=f"#resumen: {request['weather'][0]['description']}  \n#main: {request['weather'][0]['main']} ")
+    bot.send_message(chat_id=chanel, text=f"#resumen: {request['weather'][0]['description']}  \n#main: {request['weather'][0]['main']} \n#dirección viento: {request[]}")
     return reply
 
 
