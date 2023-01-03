@@ -45,7 +45,9 @@ def weathertext(request: dict):
             f"\n  Se siente como {request['main']['feels_like']} ºC" \
             f"\n  Mínima: {request['main']['temp_min']} ºC" \
             f"\n  Máxima: {request['main']['temp_max']} ºC" \
-            f"\nViento: {round((request['wind']['speed'] * 3.6), 2)} km/h, con dirección {wind_direction(request['wind']['deg'])} " \
+            f"\nViento: " \
+            f"\n  Velocidad: {round((request['wind']['speed'] * 3.6), 2)} km/h" \
+            f"\n  Dirección: {wind_direction(request['wind']['deg'])}" \
             f"\nNubosidad: {request['clouds']['all']}%" \
 
     if 'rain' in request and request['rain']['3h'] != 0:
